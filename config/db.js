@@ -1,7 +1,16 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, ServerApiVersion } from 'mongodb';
+import dotenv from 'dotenv';
 
-const url = "mongodb://localhost:27017";
-const client = new MongoClient(url);
+dotenv.config();
+
+const url = `mongodb+srv://admin:${process.env.MONGODB_PASSWORD}@cluster0.mrw9qa2.mongodb.net/?retryWrites=true&w=majority`;
+const client = new MongoClient(url, {
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+      }
+});
 var db;
 
 async function connect(){
