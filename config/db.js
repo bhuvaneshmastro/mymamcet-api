@@ -4,7 +4,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const url = `mongodb://localhost:27017`;
-const client = new MongoClient(url);
+const client = new MongoClient(url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
 var db;
 
 async function connect(){

@@ -100,12 +100,12 @@ authRouter.post('/register', async function (req, res) {
 
     const result = await db.collection('users').insertOne(user);
 
-    const payload = {
-        uid: result._id,
-        role: role
-    }
+    // const payload = {
+    //     uid: result._id,
+    //     role: role
+    // }
 
-    const token = generateToken(payload);
+    // const token = generateToken(payload);
     res.status(201).end();
 
 });

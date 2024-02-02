@@ -22,6 +22,18 @@ subjectRoutes.post('/add', decrypt, async (req, res) => {
     }
 })
 
+subjectRoutes.post('/queries', decrypt, async(req, res)=> {
+    try{
+        const {program, department} = req.body.data;
+        const allBatches = await db.collection('batches').find({program, department}, {projection: {students: 0}}).toArray();
+        res.status(200).json({success: true, message: 'Queries fetched successfully', data: allBatches})
+    }
+    catch(err){
+        console.log(err);
+        return res.status(500).json(({ success: false, message: "Internal server error! Team working on it to fix" }))
+    }
+})
+
 subjectRoutes.get('/all', async (req, res) => {
     try {
         const doesSubjectExit = await db.collection('subjects').find({}).toArray();

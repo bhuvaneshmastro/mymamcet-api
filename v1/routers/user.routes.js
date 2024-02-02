@@ -9,7 +9,6 @@ userRouter.get('/details', verifyToken, getUser, (req, res) => {
   if (!user) {
     res.status(401).json({ success: false, message: "Invalid user", user: false });
   } else {
-
     const data = encrypt(req.user);
     res.status(200).json({ success: true, message: "User has verified", user: true, data: data });
   }

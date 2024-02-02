@@ -52,4 +52,4 @@ const user = new mongoose.Schema({
     }
 });
 
-export const userModel = new mongoose.model('userAuthModel', user);
+export const userModel = new mongoose.model('users', user);
