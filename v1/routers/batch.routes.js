@@ -31,7 +31,7 @@ batchRouter.get('/query', verifyToken, getUser, async (req, res) => {
     }
 })
 
-batchRouter.post('/details', verifyToken, getUser, decrypt, async (req, res) => {
+batchRouter.get('/details', verifyToken, getUser, decrypt, async (req, res) => {
     try {
         const {id}  = req.body.data;
         const batch = await db.collection('batches').findOne({_id: new ObjectId(id)});

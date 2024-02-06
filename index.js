@@ -25,7 +25,7 @@ app.use(express.json({ limit: '10mb' }));
 
 connect();
 
-app.use('/api/v1/mamcet/auth', authRouter);
+// app.use('/api/v1/mamcet/auth', authRouter);
 app.use('/api/v1/course', verifyToken, getUser, courseRouter);
 app.use('/api/v1/subject', verifyToken, getUser, subjectRoutes);
 app.use('/api/v1/batch', batchRouter);
