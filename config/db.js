@@ -1,19 +1,22 @@
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import { MongoClient } from 'mongodb';
 
 dotenv.config();
 
-const url = `mongodb://localhost:27017`;
-const client = new MongoClient(url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-var db;
+const uri = process.env.MONGOOSE_URI;
+let db 
+async function connect() {
+  await mongoose.connect(uri)
+    .then(() => {
+      console.log('Connected to MongoDB ✨');
+    }).catch((error) => {
+      console.error('Error connecting to MongoDB:', error);
+    });
 
-async function connect(){
-    await client.connect();
-    db = client.db('mymamcet');
-    console.log("Connected to MongoDB ✨");
-}
+    let client = new MongoClient(process.env.MONGODB_URI);
+    client.connect();
+    db = client.db('mymamcet')
+  }
 
-export {connect, db}
+export { connect, db }

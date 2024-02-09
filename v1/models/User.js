@@ -1,10 +1,18 @@
 import mongoose from "mongoose";
+import { indiaDate } from "../services/DateAndTime.js";
 
-const user = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     email: {
         type: String,
         unique: true,
         require: true,
+        lowercase: true,
+        validate: {
+            validator: function (v) {
+                return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v);
+            },
+            message: props => `${props.value} is not a valid email address!`
+        },
     },
     password: {
         type: String,
@@ -13,9 +21,10 @@ const user = new mongoose.Schema({
     role: {
         type: Number,
         require: true,
+        enum: ['admin', 'professor', 'office']
     },
     phone: {
-        type: Number,
+        type: String,
         require: true
     },
     firstName: {
@@ -30,17 +39,14 @@ const user = new mongoose.Schema({
         type: String,
         require: true
     },
-    loginEmail: {
-        type: String,
-        require: true
-    },
     photo: {
         type: String,
         require: true
     },
     verified: {
         type: Boolean,
-        require: true
+        require: true,
+        default: false,
     },
     address: {
         type: String,
@@ -49,7 +55,15 @@ const user = new mongoose.Schema({
     department: {
         type: String,
         require: true
+    },
+    createdAt: {
+        type: String,
+        default: ()=> indiaDate.timestamps
+    },
+    lastModified: {
+        type: String,
+        default: ()=> indiaDate.timestamps
     }
 });
 
-export const userModel = new mongoose.model('users', user);
+export const User = mongoose.model('users', userSchema);
