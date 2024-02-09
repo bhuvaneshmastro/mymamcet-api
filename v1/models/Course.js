@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { indiaDate } from '../services/DateAndTime.js'
 
 const course = new mongoose.Schema({
     courseName: {
@@ -18,6 +19,14 @@ const course = new mongoose.Schema({
         type: String,
         require: true,
     },
+    createdAt: {
+        type: String,
+        default: () => indiaDate.timestamps
+    },
+    lastModified: {
+        type: String,
+        default: () => indiaDate.timestamps
+    }
 });
 
-export const courseModel = new mongoose.model('courses', course);
+export const Course = mongoose.model('courses', course);
