@@ -1,5 +1,7 @@
 import expressAsyncHandler from "express-async-handler";
 import { semesterModel } from "../models/Semester.js";
+import { indiaDate } from "../services/DateAndTime.js";
+import { addTimestamp } from "../services/addTimestamps.js";
 
 const add = expressAsyncHandler(async(req, res) => {
     try {
@@ -35,19 +37,28 @@ const getsem =expressAsyncHandler( async (req, res) => {
 });
 
 const editSem = expressAsyncHandler(async (req, res) => {
-    const  semId = req.body._id ;
-    const data = await semesterModel.findOne({_id : semId});
-    if (!data) {
-        res.status(400);
-        throw new Error("semester not found");
+    try {
+        const semId = req.body._id; // Assuming _id is sent in the request body
+        const data = await semesterModel.findOne({_id: semId});
+        
+        if (!data) {
+            return res.status(404).json({success: false, message: "Semester not found"});
+        }
+
+        // body <- {lastModified: ""}
+        const newData = addTimestamp(req.body)
+        // Update the semester fields with the new data
+        const updatedSem = await semesterModel.findByIdAndUpdate(semId, newData, {new: true});
+        
+        return res.status(200).json({success: true, message: "Semester updated successfully", data: updatedSem});
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({success: false, message: "Internal server error! Team working on it to fix"});
     }
-    const updatedSem = await semesterModel.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true }
-    );
-    res.status(200).json(updateSem);
 });
+
+
+
 export{
     add , 
     getsem, 
