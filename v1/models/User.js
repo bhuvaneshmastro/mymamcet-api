@@ -35,6 +35,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         require: true
     },
+    role: {
+        type: String,
+        require: true
+    },
     jobTitle: {
         type: String,
         require: true
@@ -55,6 +59,10 @@ const userSchema = new mongoose.Schema({
     department: {
         type: String,
         require: true
+    },
+    logs: {
+        type: [],
+        require: true,
     },
     createdAt: {
         type: String,

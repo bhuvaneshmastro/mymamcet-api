@@ -1,13 +1,15 @@
 import expressAsyncHandler from "express-async-handler";
 import { Course } from "../models/Course.js";
+import { ObjectId } from "bson";
+import { getID } from "../services/getID.js";
+import { MongoDB } from "../services/Log.js";
 
 const add = expressAsyncHandler(async (req, res) => {
     try {
         const data = req.body;
-        const doesCourseExit = await Course.findOne({ courseName: data.courseName });
+        const doesCourseExit = await Course.findOne({ courseName: data.courseName, regulation: data.regulation });
         if (!doesCourseExit) {
-            const course = new Course(data);
-            await course.save();
+            await MongoDB.save(req, data, 'course', Course);
             return res.status(200).json({ success: true, message: "Course added successfully" });
         }
         else {
@@ -20,26 +22,11 @@ const add = expressAsyncHandler(async (req, res) => {
     }
 });
 
-const getQuery = expressAsyncHandler(async (req, res, next) => {
-    try {
-        const allCourses = await Course.find({});
-        const courseNames = Array.from(new Set(allCourses.map((course) => course.courseName)));
-        const regulations = Array.from(new Set(allCourses.map((course) => course.regulation)));
-        const optionCourseNames = courseNames.map((name) => ({ label: name, value: name }))
-        const optionRegulation = regulations.map((regulation) => ({ label: regulation, value: regulation }))
-        res.status(200).json({ success: true, message: "Course queries fetched successfully", queries: { courseNames, regulations, optionCourseNames, optionRegulation } })
-    }
-    catch (err) {
-        next(err)
-    }
-})
-
 const all = expressAsyncHandler(async (req, res) => {
     try {
-        const doesCourseExit = await db.collection('courses').find({}).toArray();
+        const doesCourseExit = await Course.find();
         if (doesCourseExit) {
-            const data = encrypt(doesCourseExit);
-            return res.status(200).json({ success: true, message: "All courses fetched successfully", data: data });
+            return res.status(200).json({ success: true, message: "All courses fetched successfully", courses: doesCourseExit });
         }
         else {
             return res.status(200).json({ success: false, message: "Courses not found" });
@@ -53,19 +40,16 @@ const all = expressAsyncHandler(async (req, res) => {
 
 const details = expressAsyncHandler(async (req, res) => {
     try {
-        const courseId = req.body.data;
-        const doesCourseExit = await db.collection('courses').find({ _id: new ObjectId(courseId) }).toArray();
+        const courseId = getID(req.path);
+        const doesCourseExit = await Course.findOne({ _id: new ObjectId(courseId) });
         if (doesCourseExit) {
-            const data = encrypt(doesCourseExit);
-            console.log(doesCourseExit);
-            return res.status(200).json({ success: true, message: "Course details fetched successfully", data: data });
+            return res.status(200).json({ success: true, message: "Course details fetched successfully", course: doesCourseExit });
         }
         else {
             return res.status(200).json({ success: false, message: "Course details not found" });
         }
     }
     catch (err) {
-        console.log(err);
         return res.status(500).json(({ success: false, message: "Internal server error! Team working on it to fix" }))
     }
 })
@@ -73,39 +57,32 @@ const details = expressAsyncHandler(async (req, res) => {
 
 const edit = expressAsyncHandler(async (req, res) => {
     try {
-        const data = req.body.data;
-        const doesCourseExit = await db.collection('courses').findOne({ _id: new ObjectId(data._id) });
-        if (doesCourseExit) {
-            const result = await db.collection('courses').updateOne({ _id: new ObjectId(data._id) }, {
-                $set: {
-                    courseName: data.courseName,
-                    regulation: data.regulation,
-                    department: data.department,
-                    program: data.program,
-                },
-            });
+        const data = req.body;
+        const doesCourseExist = await Course.findOne({ _id: new ObjectId(data._id) });
+        if (doesCourseExist) {
+            await MongoDB.updateOne(req, data, 'course', Course);
             return res.status(200).json({ success: true, message: "Course edited successfully" });
-        }
-        else {
+        } else {
             return res.status(200).json({ success: false, message: "Course doesn't exist" });
         }
-    }
-    catch (err) {
+    } catch (err) {
         console.log(err);
-        return res.status(500).json(({ success: false, message: "Internal server error! Team working on it to fix" }))
+        return res.status(500).json(({ success: false, message: "Internal server error! Team working on it to fix" }));
     }
-})
+});
 
 const delete1 = expressAsyncHandler(async (req, res) => {
     try {
-        const courseId = req.body.data;
-        const doesCourseExit = await db.collection('courses').findOne({ _id: new ObjectId(courseId) });
+        const courseId = getID(req.path)
+        const doesCourseExit = await Course.findOne({ _id: new ObjectId(courseId) });
         if (doesCourseExit) {
-            const result = await db.collection('courses').deleteOne({ _id: new ObjectId(courseId) })
+            const logsId = doesCourseExit.logs;
+            await Course.deleteOne({ _id: new ObjectId(courseId) })
+            await MongoDB.deleteLogs(logsId)
             return res.status(200).json({ success: true, message: "Course deleted successfully" });
         }
         else {
-            return res.status(200).json({ success: false, message: "Course doesn't exist" });
+            return res.status(404).json({ success: false, message: "Course doesn't exist" });
         }
     }
     catch (err) {
@@ -114,4 +91,4 @@ const delete1 = expressAsyncHandler(async (req, res) => {
     }
 })
 
-export { add, all, details, edit, getQuery, delete1 }
+export { add, all, details, edit, delete1 }

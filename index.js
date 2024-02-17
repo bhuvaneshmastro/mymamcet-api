@@ -14,6 +14,8 @@ import { error } from './v1/middlewares/error.middleware.js';
 import { checkAuthorization } from './v1/middlewares/auth.middleware.js';
 import { decryptMiddleware } from './v1/middlewares/security.middleware.js';
 import { getQueries } from './v1/controllers/queries.controller.js';
+import { queryRoute } from './v1/routers/query.routes.js';
+import { studentRoute } from './v1/routers/student.routes.js';
 
 const app = express();
 const PORT = 3035;
@@ -34,8 +36,9 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/course', courseRouter);
 app.use('/api/v1/subject', subjectRoutes);
 app.use('/api/v1/batch', batchRouter);
-app.use('/api/v1/queries', getQueries);
+app.use('/api/v1/queries', queryRoute);
 app.use('/api/v1/semester', semesterRouter);
+app.use('/api/v1/student', studentRoute);
 app.use('/api/v1/user', userRouter);
 app.use(error);
 

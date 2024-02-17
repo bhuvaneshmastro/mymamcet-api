@@ -27,12 +27,12 @@ const login = expressAsyncHandler(async function (req, res, next) {
         const cookieName = String(user._id)
 
         res.cookie(cookieName, token, {
-            expires: new Date(Date.now() + 1000 * 60 * 60),
+            expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
             httpOnly: true,
             sameSite: 'lax'
         })
             .status(200)
-            .json({ success: true, message: 'You have successfully logged in!', role: user.role });
+            .json({ success: true, message: 'You have successfully logged in!', user });
     } catch (error) {
         next(error)
     }

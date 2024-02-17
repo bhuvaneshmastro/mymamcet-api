@@ -1,19 +1,17 @@
 import mongoose from "mongoose";
 
-const students = new mongoose.Schema({
-    registerNumber: {
-        type: Number,
-        require: true
-    }
-})
-
 const batch = new mongoose.Schema({
     batchName: {
         type: String,
         require: true,
     },
-    semester: {
-        type: String,
+    semesters: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                default: null
+            }
+        ],
         require: true
     },
     academicYear: {
@@ -24,16 +22,27 @@ const batch = new mongoose.Schema({
         type: String,
         require: true
     },
+    regulation: {
+        type: String,
+        require: true
+    },
+    logs: {
+        type: [],
+        require: true,
+    },
     program: {
         type: String,
         require: true
     },
     students: {
-        type: [students],
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'students'
+        }],
     },
     department: {
         type: String
     }
 });
 
-export const batchModel = new mongoose.model('batches', batch);
+export const Batch = mongoose.model('batches', batch);
