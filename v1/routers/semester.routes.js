@@ -1,11 +1,13 @@
 import express from 'express';
-import {add ,getsem, editSem} from "../controllers/semester.controller.js"
+import { add, getsem, editSem } from "../controllers/semester.controller.js"
 const semesterRouter = express.Router()
 
-semesterRouter.route('/add').post(add)
+semesterRouter.route('/').post(add)
 
-semesterRouter.route('/getSemester').get( getsem)
+semesterRouter.route('/').get(getsem)
 
-semesterRouter.route('/editSemester').put(editSem)
+semesterRouter.route('/').put(editSem)
+
+semesterRouter.route('/:id').get(getsem)
 
 export { semesterRouter }

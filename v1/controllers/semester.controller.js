@@ -1,6 +1,5 @@
 import expressAsyncHandler from "express-async-handler";
 import { semesterModel } from "../models/Semester.js";
-import { indiaDate } from "../services/DateAndTime.js";
 import { addTimestamp } from "../services/addTimestamps.js";
 
 const add = expressAsyncHandler(async(req, res) => {

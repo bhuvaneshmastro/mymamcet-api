@@ -4,7 +4,6 @@ import { indiaDate } from '../services/DateAndTime.js'
 const course = new mongoose.Schema({
     courseName: {
         type: String,
-        unique: true,
         require: true,
     },
     regulation: {
@@ -18,6 +17,17 @@ const course = new mongoose.Schema({
     program: {
         type: String,
         require: true,
+    },
+    logs: {
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'logs'
+        }],
+        require: true,
+    },
+    isFinalize: {
+        type: Boolean,
+        default: false,
     },
     createdAt: {
         type: String,
