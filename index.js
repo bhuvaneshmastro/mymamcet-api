@@ -16,6 +16,7 @@ import { decryptMiddleware } from './v1/middlewares/security.middleware.js';
 import { getQueries } from './v1/controllers/queries.controller.js';
 import { queryRoute } from './v1/routers/query.routes.js';
 import { studentRoute } from './v1/routers/student.routes.js';
+import { examRoutes } from './v1/routers/exam.routes.js';
 
 const app = express();
 const PORT = 3035;
@@ -39,6 +40,7 @@ app.use('/api/v1/batch', batchRouter);
 app.use('/api/v1/queries', queryRoute);
 app.use('/api/v1/semester', semesterRouter);
 app.use('/api/v1/student', studentRoute);
+app.use('/api/v1/exam', examRoutes);
 app.use('/api/v1/user', userRouter);
 app.use(error);
 

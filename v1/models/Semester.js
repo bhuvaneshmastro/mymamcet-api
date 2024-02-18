@@ -26,7 +26,8 @@ const semester = new mongoose.Schema({
         subjects: {
           type: [{
             type: mongoose.Schema.Types.ObjectId,
-            require: true
+            require: true,
+            ref: 'subjects'
           }],
           required: true,
         },
@@ -61,4 +62,4 @@ const semester = new mongoose.Schema({
 
    
 
-export const semesterModel = new mongoose.model('semesters ',semester);
+export const semesterModel = new mongoose.model('semesters',semester);

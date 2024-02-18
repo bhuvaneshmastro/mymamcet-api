@@ -1,16 +1,24 @@
 import expressAsyncHandler from "express-async-handler";
 import { semesterModel } from "../models/Semester.js";
 import { addTimestamp } from "../services/addTimestamps.js";
+import { Batch } from "../models/Batch.js";
+import { MongoDB } from "../services/Log.js";
 
 const add = expressAsyncHandler(async(req, res) => {
     try {
-        const data = req.body;
-        const doesSemesterExist = await semesterModel.findOne({program: data.program, department: data.department, batchName: data.batchName, semester: data.semester})
+        const {program, department, batchName, semester, academicYear, courseName, regulation, subjects} = req.body;
+        const doesSemesterExist = await semesterModel.findOne({program, department, batchName, semester})
         if(doesSemesterExist){
             return res.status(409).json({success: false, message: "Semester exist with same batch and semester"});
         }
         else{
-              await semesterModel.create(data);
+            const batch = await Batch.findOne({program, department, courseName, regulation, batchName})
+            if(!batch){
+                return res.status(404).json({success: false, message: "Batch not exist with our records"})
+            }
+            const semesterAddedResult =  await semesterModel.create({program, department, batchName, courseName, semester, academicYear, regulation, subjects});
+            batch.semesters.push(semesterAddedResult._id);
+            await MongoDB.updateOne(req, batch, 'batch', Batch)
             return res.status(200).json({success: true, message: "Semester added successfully"})
         }
     }
