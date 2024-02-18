@@ -9,9 +9,10 @@ const batch = new mongoose.Schema({
         type: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                default: null
+                ref: 'semesters'
             }
         ],
+        default: null,
         require: true
     },
     academicYear: {

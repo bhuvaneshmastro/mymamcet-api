@@ -80,7 +80,7 @@ const forgetPassword = expressAsyncHandler(async function (req, res) {
 
 const logout = expressAsyncHandler(async function (req, res) {
     const user = req.user;
-    res.clearCookie(String(user._id), { httpOnly: true }).status(200).json({ success: true, message: 'Logged out successful' })
+    res.clearCookie(String(user.uid), { httpOnly: true }).status(200).json({ success: true, message: 'Logged out successful' })
 })
 
 const register = expressAsyncHandler(async function (req, res) {
