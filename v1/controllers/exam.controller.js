@@ -9,7 +9,7 @@ const getStudentsAndSemester = expressAsyncHandler(async (req, res) => {
         .populate({
             path: 'semesters',
             match: { semester: semester }, 
-            select: 'program department batchName courseName subjects',
+            select: 'program department batchName courseName subjects assignedFaculties',
             populate: { path: 'subjects', select: 'program department semester subjectCode subjectCredit subjectName' } // Populate subjects within semesters
         });
     if (!batch) {
