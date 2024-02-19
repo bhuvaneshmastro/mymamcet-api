@@ -29,6 +29,14 @@ const subjectSchema = new mongoose.Schema({
         type: Number,
         require: true
     },
+    shortName: {
+        type: String,
+        require: true,
+    },
+    type: {
+        type: String,
+        require: true
+    },
     logs: {
         type: [{
             type: mongoose.Schema.Types.ObjectId,
@@ -46,4 +54,4 @@ const subjectSchema = new mongoose.Schema({
     }
 })
 
-export const Subject = new mongoose.model('subjects', subjectSchema);
+export const Subject = mongoose.model('subjects', subjectSchema);

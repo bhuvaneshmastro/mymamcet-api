@@ -35,6 +35,11 @@ const batch = new mongoose.Schema({
         type: String,
         require: true
     },
+    exams: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'exams',
+        default: null
+    }],
     students: {
         type: [{
             type: mongoose.Schema.Types.ObjectId,

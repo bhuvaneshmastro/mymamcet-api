@@ -16,7 +16,7 @@ const add = expressAsyncHandler(async(req, res) => {
             if(!batch){
                 return res.status(404).json({success: false, message: "Batch not exist with our records"})
             }
-            const semesterAddedResult =  await semesterModel.create({program, department, batchName, courseName, semester, academicYear, regulation, subjects, assignedFaculties});
+            const semesterAddedResult =  await semesterModel.create({batch: batch._id, semester, academicYear, regulation, subjects, assignedFaculties});
             batch.semesters.push(semesterAddedResult._id);
             await MongoDB.updateOne(req, batch, 'batch', Batch)
             return res.status(200).json({success: true, message: "Semester added successfully"})
