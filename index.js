@@ -22,7 +22,7 @@ const app = express();
 const PORT = 3035;
 
 dotenv.config();
-app.use(cors({ credentials: true, origin: 'http://localhost:5173' }));
+app.use(cors({ credentials: true, origin: process.env.CLIENT_URL }));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
