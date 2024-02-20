@@ -6,14 +6,18 @@ const scoreSchema = new mongoose.Schema({
         ref: 'students',
         require: true
     },
-    exam: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'exams',
-        require: true
-    },
     score: {
         type: Number,
         require: true
+    },
+    exam: {
+        type: String,
+        require: true
+    },
+    subject: {
+        type: mongoose.Schema.Types.ObjectId,
+        require: true,
+        ref: 'subjects'
     },
     isPass: {
         type: String,
@@ -29,4 +33,4 @@ const scoreSchema = new mongoose.Schema({
     },
 })
 
-export const Exam = mongoose.model('exams', scoreSchema);
+export const Scores = mongoose.model('scores', scoreSchema);

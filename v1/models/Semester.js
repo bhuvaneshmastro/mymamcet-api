@@ -3,17 +3,10 @@ import { indiaDate } from "../services/DateAndTime.js";
 
 
 const semester = new mongoose.Schema({
-  department: {
-    type: String,
-    required: true
-  },
-  courseName: {
-    type: String,
-    required: true,
-  },
-  batchName: {
-    type: String,
-    required: true,
+  batch: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'batches',
+    require: true
   },
   academicYear: {
     type: String,
@@ -46,10 +39,6 @@ const semester = new mongoose.Schema({
     }
   ],
   regulation: {
-    type: String,
-    required: true
-  },
-  program: {
     type: String,
     required: true
   },
