@@ -33,19 +33,8 @@ if (!process.env.CLIENT_URL) {
 }
 
 // Configure middleware
-var whitelist = [process.env.CLIENT_URL]
-var corsOptions = {
-    origin: function (origin, callback) {
-        if (whitelist.indexOf(origin) !== -1) {
-            callback(null, true)
-        } else {
-            callback(new Error('Not allowed by CORS'))
-        }
-    }
-}
-app.use(cors(corsOptions));
-
-
+app.use(cors({ credentials: true, origin:'*'}));
+console.log(process.env.CLIENT_URL)
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
