@@ -24,6 +24,10 @@ const scoreSchema = new mongoose.Schema({
         require: true,
         default: 'Pass'
     },
+    passingYear: {
+        type: String,
+        default: null
+    },
     logs: {
         type: [{
             type: mongoose.Schema.Types.ObjectId,
