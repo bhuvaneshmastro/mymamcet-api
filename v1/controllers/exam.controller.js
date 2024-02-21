@@ -62,7 +62,7 @@ const getStudentsAndSemester = expressAsyncHandler(async (req, res) => {
             select: 'exam semester academicYear',
             populate: {
                 path: 'scores',
-                select: 'student score subject isPass exam'
+                select: 'student score subject isPass exam passingYear'
             }
         });
 
@@ -89,7 +89,7 @@ const updateScore = expressAsyncHandler(async (req, res) => {
         for (const scoreData of marks) {
             const existingScore = await Scores.findOneAndUpdate(
                 { exam: scoreData.exam, subject: scoreData.subject, student: scoreData.student },
-                { $set: { score: scoreData.score } },
+                { $set: { score: scoreData.score, passingYear: scoreData.passingYear } },
                 { new: true }
             );
 
