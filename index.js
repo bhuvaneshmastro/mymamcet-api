@@ -23,17 +23,19 @@ import { connect } from './config/db.js';
 const app = express();
 const PORT = process.env.PORT || 3035;
 
-// Load environment variables from .env file
 dotenv.config();
 
-// Validate CLIENT_URL environment variable
-if (!process.env.CLIENT_URL) {
-    console.error("CLIENT_URL environment variable is not defined.");
-    process.exit(1);
+var whitelist = ['http://localhost:5173', 'https://mymamcet.vercel.app/']
+var corsOptions = {
+    origin: function (origin, callback) {
+        if (whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    }
 }
-
-// Configure middleware
-app.use(cors({ credentials: true, origin:'*'}));
+app.use(cors(corsOptions));
 console.log(process.env.CLIENT_URL)
 app.use(cookieParser());
 app.use(bodyParser.json());

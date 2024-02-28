@@ -10,7 +10,7 @@ import { ObjectId } from "mongodb";
 const getStudentsAndSemester = expressAsyncHandler(async (req, res) => {
     const { program, department, regulation, courseName, batchName, academicYear, semester, exam } = req.query;
     const existBatch = await Batch.findOne({ program, department, regulation, courseName, batchName })
-        .populate('students', 'registerNumber name')
+        .populate('students')
         .populate({
             path: 'semesters',
             match: { semester: semester },
@@ -49,20 +49,16 @@ const getStudentsAndSemester = expressAsyncHandler(async (req, res) => {
     }
 
     const batch = await Batch.findOne({ program, department, regulation, courseName, batchName })
-        .populate('students', 'registerNumber name')
+        .populate('students')
         .populate({
             path: 'semesters',
             match: { semester: semester },
-            select: 'program department batchName courseName subjects assignedFaculties',
-            populate: { path: 'subjects', select: 'program department semester subjectCode subjectCredit subjectName shortName type' } // Populate subjects within semesters
+            populate: { path: 'subjects' } // Populate subjects within semesters
         })
         .populate({
             path: 'exams',
-            match: { _id: examId },
-            select: 'exam semester academicYear',
             populate: {
-                path: 'scores',
-                select: 'student score subject isPass exam passingYear'
+                path: 'scores'
             }
         });
 
