@@ -71,6 +71,36 @@ const student = new mongoose.Schema({
         type: String,
         require: true
     },
+    semesterStats: [{
+        semester: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'semesters'
+        },
+        cgpa: {
+            type: Number,
+            default: 0
+        },
+        gpa: {
+            type: Number,
+            default: 0,
+        },
+        semesterArrears: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'subjects',
+                default: null
+            }
+        ]
+    }],
+    historyOfArrears: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'subjects',
+        default: null
+    }],
+    cgpa: {
+        type: Number,
+        default: 0
+    },
     address: {
         type: String,
         require: true
