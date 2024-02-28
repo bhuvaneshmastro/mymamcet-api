@@ -25,7 +25,7 @@ const PORT = process.env.PORT || 3035;
 
 dotenv.config();
 
-var whitelist = ['http://localhost:5173', 'https://mymamcet.vercel.app/']
+var whitelist = ['http://localhost:5173', 'https://mymamcet.vercel.app']
 var corsOptions = {
     origin: function (origin, callback) {
         if (whitelist.indexOf(origin) !== -1) {
