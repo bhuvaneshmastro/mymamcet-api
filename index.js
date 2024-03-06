@@ -25,18 +25,7 @@ const PORT = process.env.PORT || 3035;
 
 dotenv.config();
 
-var whitelist = ['http://localhost:5173', 'https://mymamcet.vercel.app']
-var corsOptions = {
-    origin: function (origin, callback) {
-        if (whitelist.indexOf(origin) !== -1) {
-            callback(null, true)
-        } else {
-            callback(new Error('Not allowed by CORS'))
-        }
-    }
-}
-app.use(cors(corsOptions));
-console.log(process.env.CLIENT_URL)
+app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }))
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -45,7 +34,13 @@ app.use(express.json({ limit: '10mb' }));
 // Connect to database
 connect();
 
+
 // Register middleware and routers
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_URL);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    next();
+  });
 app.use(error);
 app.use(checkAuthorization);
 app.use(decryptMiddleware);
