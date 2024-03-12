@@ -29,7 +29,8 @@ const login = expressAsyncHandler(async function (req, res, next) {
         res.cookie(cookieName, token, {
             expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
             httpOnly: true,
-            sameSite: 'lax'
+            sameSite: 'none',
+            secure: true
         })
             .status(200)
             .json({ success: true, message: 'You have successfully logged in!', user });
