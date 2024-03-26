@@ -9,21 +9,30 @@ import { ObjectId } from "mongodb";
 
 const getStudentsAndSemester = expressAsyncHandler(async (req, res) => {
     const { program, department, regulation, courseName, batchName, academicYear, semester, exam } = req.query;
-    const existBatch = await Batch.findOne({ program, department, regulation, courseName, batchName })
+    // First, fetch the existBatch
+    const existBatch = await Batch.findOne({ program: program, department: department, regulation: regulation, courseName: courseName, batchName: batchName });
+
+    // Then, use its _id in the findOne query
+    const batch = await Batch.findOne({ program, department, regulation, courseName, batchName })
         .populate('students')
+        .populate({path: 'exams', match: {exam: exam}})
         .populate({
             path: 'semesters',
-            match: { semester: semester },
             select: 'program department batchName courseName subjects assignedFaculties',
-            populate: { path: 'subjects', select: 'program department semester subjectCode subjectCredit subjectName shortName type' } // Populate subjects within semesters
+            match: { semester: semester, batch: existBatch._id }, // Pass existBatch._id to match condition
+            populate: {
+                path: 'subjects',
+                select: 'program department semester subjectCode subjectCredit subjectName shortName type'
+            } // Populate subjects within semesters
         });
+
+    const existSemester = await semesterModel.findOne({ semester: semester, batch: existBatch._id })
+        .populate('subjects')
 
     if (!existBatch) {
         return res.status(404).json({ success: false, message: "Batch does not exist in our records" });
     }
-
-    const semesterExist = await semesterModel.findOne({ batch: existBatch._id, academicYear, semester, regulation });
-    if (!semesterExist || existBatch.semesters <= 0) {
+    if (!batch.semesters || existBatch.semesters <= 0) {
         return res.status(404).json({ success: false, message: "Semester for this batch does not exist" });
     }
 
@@ -48,19 +57,7 @@ const getStudentsAndSemester = expressAsyncHandler(async (req, res) => {
         return res.status(404).json({ success: false, message: "Exam does not exist" });
     }
 
-    const batch = await Batch.findOne({ program, department, regulation, courseName, batchName })
-        .populate('students')
-        .populate({
-            path: 'semesters',
-            match: { semester: semester },
-            populate: { path: 'subjects' } // Populate subjects within semesters
-        })
-        .populate({
-            path: 'exams',
-            populate: {
-                path: 'scores'
-            }
-        });
+    batch.semesters = [existSemester]
 
     res.status(200).json({ success: true, message: "Operation successful", batch });
 });
@@ -104,15 +101,15 @@ const updateScore = expressAsyncHandler(async (req, res) => {
 });
 
 
-const addScore = expressAsyncHandler(async(req, res)=> {
+const addScore = expressAsyncHandler(async (req, res) => {
     try {
         const { marks, examId } = req.body;
         const examDocument = await Exam.findOne({ _id: new ObjectId(examId) });
 
-        if(marks.length <= 0){
+        if (marks.length <= 0) {
             return res.status(400).json({ success: false, message: 'Marks not found in the request' });
         }
-        
+
         if (!examDocument) {
             return res.status(404).json({ success: false, message: 'Exam not found' });
         }
@@ -121,9 +118,9 @@ const addScore = expressAsyncHandler(async(req, res)=> {
         console.log(marks);
 
         for (const scoreData of marks) {
-            const existScore = await Scores.findOne({exam: scoreData.exam, subject: scoreData.subject, student: scoreData.student})
+            const existScore = await Scores.findOne({ exam: scoreData.exam, subject: scoreData.subject, student: scoreData.student })
 
-            if(existScore){
+            if (existScore) {
                 return res.status(409).json({ success: false, message: `Score exist: Exam: ${scoreData.exam}` });
             }
             const score = new Scores(scoreData);
@@ -134,10 +131,10 @@ const addScore = expressAsyncHandler(async(req, res)=> {
 
         // Save the examDocument to update the scores array
         await examDocument.save();
-        res.status(200).json({success: true, message: 'Scores saved successfully', scores });
+        res.status(200).json({ success: true, message: 'Scores saved successfully', scores });
     } catch (error) {
         console.error('Error saving scores:', error);
-        res.status(500).json({success: false, message: 'Internal server error' });
+        res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
 

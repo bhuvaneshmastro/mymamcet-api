@@ -8,7 +8,7 @@ import { indiaDate } from "../services/DateAndTime.js";
 const login = expressAsyncHandler(async function (req, res, next) {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }, {projection: {password: 0}});
         if (!user) {
             return res.status(400).json({ success: false, message: 'Invalid username or password' });
         }
@@ -29,7 +29,8 @@ const login = expressAsyncHandler(async function (req, res, next) {
         res.cookie(cookieName, token, {
             expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
             httpOnly: true,
-            sameSite: 'lax'
+            sameSite: 'none',
+            secure: true
         })
             .status(200)
             .json({ success: true, message: 'You have successfully logged in!', user });
