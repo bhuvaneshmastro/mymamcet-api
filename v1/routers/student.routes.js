@@ -1,7 +1,7 @@
 import express from 'express'
 import { getAllStudents } from '../controllers/student.controller.js';
-const studentRoute = express.Router();
+const v1StudentRoute = express.Router();
 
-studentRoute.route('/').get(getAllStudents);
+v1StudentRoute.route('/').get(getAllStudents);
 
-export { studentRoute }
+export { v1StudentRoute }

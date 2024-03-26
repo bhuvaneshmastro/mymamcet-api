@@ -1,16 +1,16 @@
 import express from 'express'
 import { add, all, details, edit, delete1 } from "../controllers/course.controller.js"
 
-const courseRouter = express.Router();
+const v1CourseRouter = express.Router();
 
-courseRouter.route('/add').post(add)
+v1CourseRouter.route('/add').post(add)
 
-courseRouter.route('/all').get(all)
+v1CourseRouter.route('/all').get(all)
 
-courseRouter.route('/:id').get(details)
+v1CourseRouter.route('/:id').get(details)
 
-courseRouter.route('/edit').put(edit)
+v1CourseRouter.route('/edit').put(edit)
 
-courseRouter.route('/:id').delete(delete1)
+v1CourseRouter.route('/:id').delete(delete1)
 
-export { courseRouter }
+export { v1CourseRouter }

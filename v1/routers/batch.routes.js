@@ -6,12 +6,12 @@ import {
     add1,
     deleteBatch
 } from "../controllers/batch.controller.js"
-const batchRouter = express.Router();
+const v1BatchRouter = express.Router();
 
-batchRouter.route('/all').get(all)
-batchRouter.route('/edit').put(update)
-batchRouter.route('/add').post(add1)
-batchRouter.route('/:id').delete(deleteBatch)
-batchRouter.route('/:id').get(details2)
+v1BatchRouter.route('/all').get(all)
+v1BatchRouter.route('/edit').put(update)
+v1BatchRouter.route('/add').post(add1)
+v1BatchRouter.route('/:id').delete(deleteBatch)
+v1BatchRouter.route('/:id').get(details2)
 
-export { batchRouter }
+export { v1BatchRouter }

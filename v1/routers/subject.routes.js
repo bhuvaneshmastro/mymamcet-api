@@ -6,12 +6,12 @@ import {
     edit,
     details
 } from "../controllers/subject.controller.js"
-const subjectRoutes = express.Router();
+const v1SubjectRoutes = express.Router();
 
-subjectRoutes.route('/add').post(add)
-subjectRoutes.route('/all').get(all)
-subjectRoutes.route('/:id').get(details)
-subjectRoutes.route('/edit').put(edit)
-subjectRoutes.route('/:id').delete(delete1)
+v1SubjectRoutes.route('/add').post(add)
+v1SubjectRoutes.route('/all').get(all)
+v1SubjectRoutes.route('/:id').get(details)
+v1SubjectRoutes.route('/edit').put(edit)
+v1SubjectRoutes.route('/:id').delete(delete1)
 
-export { subjectRoutes }
+export { v1SubjectRoutes }

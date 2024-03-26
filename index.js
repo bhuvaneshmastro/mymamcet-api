@@ -3,23 +3,20 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-
-// Import routers and middleware
-import { authRouter } from './v1/routers/auth.routes.js';
-import { userRouter } from './v1/routers/user.routes.js';
-import { courseRouter } from './v1/routers/course.routes.js';
-import { subjectRoutes } from './v1/routers/subject.routes.js';
-import { batchRouter } from './v1/routers/batch.routes.js';
-import { semesterRouter } from './v1/routers/semester.routes.js';
-import { queryRoute } from './v1/routers/query.routes.js';
-import { studentRoute } from './v1/routers/student.routes.js';
-import { examRoutes } from './v1/routers/exam.routes.js';
+import { v1AuthRouter } from './v1/routers/auth.routes.js';
+import { v1UserRouter } from './v1/routers/user.routes.js';
+import { v1CourseRouter } from './v1/routers/course.routes.js';
+import { v1SubjectRoutes } from './v1/routers/subject.routes.js';
+import { v1BatchRouter } from './v1/routers/batch.routes.js';
+import { v1SemesterRouter } from './v1/routers/semester.routes.js';
+import { v1QueryRoute } from './v1/routers/query.routes.js';
+import { v1StudentRoute } from './v1/routers/student.routes.js';
+import { v1ExamRoutes } from './v1/routers/exam.routes.js';
 import { error } from './v1/middlewares/error.middleware.js';
 import { checkAuthorization } from './v1/middlewares/auth.middleware.js';
 import { decryptMiddleware } from './v1/middlewares/security.middleware.js';
 import { connect } from './config/db.js';
 
-// Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 3035;
 
@@ -31,11 +28,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json({ limit: '10mb' }));
 
-// Connect to database
 connect();
 
-
-// Register middleware and routers
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_URL);
     res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -44,18 +38,20 @@ app.use((req, res, next) => {
 app.use(error);
 app.use(checkAuthorization);
 app.use(decryptMiddleware);
-app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/course', courseRouter);
-app.use('/api/v1/subject', subjectRoutes);
-app.use('/api/v1/batch', batchRouter);
-app.use('/api/v1/queries', queryRoute);
-app.use('/api/v1/semester', semesterRouter);
-app.use('/api/v1/student', studentRoute);
-app.use('/api/v1/exam', examRoutes);
-app.use('/api/v1/user', userRouter);
+
+// Version v1
+app.use('/api/v1/auth', v1AuthRouter);
+app.use('/api/v1/course', v1CourseRouter);
+app.use('/api/v1/subject', v1SubjectRoutes);
+app.use('/api/v1/batch', v1BatchRouter);
+app.use('/api/v1/queries', v1QueryRoute);
+app.use('/api/v1/semester', v1SemesterRouter);
+app.use('/api/v1/student', v1StudentRoute);
+app.use('/api/v1/exam', v1ExamRoutes);
+app.use('/api/v1/user', v1UserRouter);
+
 app.use(error);
 
-// Start the server
 app.listen(PORT, () => {
     console.log(`Server listening on http://localhost:${PORT}`);
 });

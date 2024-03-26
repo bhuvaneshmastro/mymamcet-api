@@ -1,8 +1,8 @@
 import express from 'express';
 import { details, add } from "../controllers/user.controller.js"
-const userRouter = express.Router();
+const v1UserRouter = express.Router();
 
-userRouter.route('/details',).get(details)
-userRouter.route('/add',).post(add)
+v1UserRouter.route('/details',).get(details)
+v1UserRouter.route('/add',).post(add)
 
-export { userRouter }
+export { v1UserRouter }

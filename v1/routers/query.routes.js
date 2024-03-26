@@ -1,8 +1,8 @@
 import express from 'express'
 import { getDocuments, getLogs, getQueries } from '../controllers/queries.controller.js';
-const queryRoute = express.Router();
+const v1QueryRoute = express.Router();
 
-queryRoute.route('/query').get(getQueries)
-queryRoute.route('/logs').get(getLogs)
-queryRoute.route('/documents').get(getDocuments)
-export { queryRoute }
+v1QueryRoute.route('/query').get(getQueries)
+v1QueryRoute.route('/logs').get(getLogs)
+v1QueryRoute.route('/documents').get(getDocuments)
+export { v1QueryRoute }
