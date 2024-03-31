@@ -16,6 +16,7 @@ import { error } from './v1/middlewares/error.middleware.js';
 import { checkAuthorization } from './v1/middlewares/auth.middleware.js';
 import { decryptMiddleware } from './v1/middlewares/security.middleware.js';
 import { connect } from './config/db.js';
+import { v1Institution } from './v1/routers/institution.routes.js';
 
 const app = express();
 const PORT = process.env.PORT || 3035;
@@ -49,6 +50,7 @@ app.use('/api/v1/semester', v1SemesterRouter);
 app.use('/api/v1/student', v1StudentRoute);
 app.use('/api/v1/exam', v1ExamRoutes);
 app.use('/api/v1/user', v1UserRouter);
+app.use('/api/v1/institution', v1Institution);
 
 app.use(error);
 
