@@ -19,7 +19,7 @@ import { connect } from './config/db.js';
 import { v1Institution } from './v1/routers/institution.routes.js';
 
 const app = express();
-const PORT = process.env.PORT || 3035;
+const PORT = process.env.PORT || 8080;
 
 dotenv.config();
 
