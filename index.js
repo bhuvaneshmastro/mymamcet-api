@@ -17,9 +17,10 @@ import { checkAuthorization } from './v1/middlewares/auth.middleware.js';
 import { decryptMiddleware } from './v1/middlewares/security.middleware.js';
 import { connect } from './config/db.js';
 import { v1Institution } from './v1/routers/institution.routes.js';
+import { v1Employee } from './v1/routers/employee.routes.js';
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3035;
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ connect();
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_URL);
     res.setHeader('Access-Control-Allow-Credentials', 'true');
+    // console.log);
     next();
   });
 app.use(error);
@@ -42,6 +44,7 @@ app.use(decryptMiddleware);
 
 // Version v1
 app.use('/api/v1/auth', v1AuthRouter);
+app.use('/api/v1/employee', v1Employee);
 app.use('/api/v1/course', v1CourseRouter);
 app.use('/api/v1/subject', v1SubjectRoutes);
 app.use('/api/v1/batch', v1BatchRouter);

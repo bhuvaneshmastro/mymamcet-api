@@ -18,14 +18,20 @@ const userSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    role: {
-        type: Number,
-        require: true,
-        enum: ['admin', 'professor', 'office']
+    roles: {
+        type: [{
+            type: String,
+            default: 'professor',
+            enum: ['admin', 'professor', 'office', 'hod', 'principle', 'registrer']
+        }],
     },
-    phone: {
-        type: String,
+    ph_no: {
+        type: Number,
         require: true
+    },
+    country_code: {
+        type: String,
+        require: true,
     },
     firstName: {
         type: String,
@@ -35,43 +41,31 @@ const userSchema = new mongoose.Schema({
         type: String,
         require: true
     },
-    role: {
-        type: String,
-        require: true
-    },
-    jobTitle: {
+    designation: {
         type: String,
         require: true
     },
     photo: {
         type: String,
-        require: true
+        default: 'https://firebasestorage.googleapis.com/v0/b/mymamcet.appspot.com/o/mamcet%2Fusers%2FDefault.jpg'
     },
-    verified: {
+    email_verified: {
         type: Boolean,
-        require: true,
         default: false,
     },
-    address: {
+    status: {
         type: String,
-        require: true
-    },
-    department: {
-        type: String,
-        require: true
-    },
-    logs: {
-        type: [],
-        require: true,
+        default: 'active',
+        enum: ['pending', 'active', 'blocked', 'archieved']
     },
     createdAt: {
-        type: String,
-        default: ()=> indiaDate.timestamps
-    },
-    lastModified: {
-        type: String,
-        default: ()=> indiaDate.timestamps
-    }
+        type: Number,
+        default: () => Math.floor(Date.now() / 1000)
+      },
+      updatedAt: {
+        type: Number,
+        default: () => Math.floor(Date.now() / 1000)
+      }
 });
 
-export const User = mongoose.model('users', userSchema);
+export const Employee = mongoose.model('employees', userSchema);

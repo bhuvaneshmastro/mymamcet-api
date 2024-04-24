@@ -1,5 +1,5 @@
 import expressAsyncHandler from "express-async-handler";
-import { User } from "../models/User.js";
+import { Employee } from "../models/Employee.js";
 import bcrypt from 'bcryptjs';
 import { generateToken } from "../services/auth/token.js";
 import { ObjectId } from "mongodb";
@@ -7,8 +7,8 @@ import { indiaDate } from "../services/DateAndTime.js";
 
 const login = expressAsyncHandler(async function (req, res, next) {
     try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email }, {projection: {password: 0}});
+        const { email, password, session } = req.body;
+        const user = await Employee.findOne({ email }, { projection: { password: 0 } });
         if (!user) {
             return res.status(400).json({ success: false, message: 'Invalid username or password' });
         }
@@ -20,20 +20,21 @@ const login = expressAsyncHandler(async function (req, res, next) {
 
         const payload = {
             uid: user._id,
-            role: user.role
+            role: user.roles
         }
 
+        const tokenExpiration = new Date(Date.now() + 1000 * 60 * 60 * 24)
         const token = generateToken(payload);
-        const cookieName = String(user._id)
+        const cookieName = String(user._id);
 
         res.cookie(cookieName, token, {
-            expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+            expires: tokenExpiration,
             httpOnly: true,
             sameSite: 'none',
             secure: true
         })
             .status(200)
-            .json({ success: true, message: 'You have successfully logged in!', user });
+            .json({ success: true, message: 'You have successfully logged in!' });
     } catch (error) {
         next(error)
     }
@@ -42,7 +43,7 @@ const login = expressAsyncHandler(async function (req, res, next) {
 const onAuthState = expressAsyncHandler(async function (req, res, next) {
     try {
         const { uid } = req.user;
-        const user = await User.findOne({ _id: new ObjectId(uid) }, { projection: { password: 0 } });
+        const user = await Employee.findOne({ _id: new ObjectId(uid) }, { projection: { password: 0 } });
         if (!user) {
             return res.status(401).json({ success: false, message: "User does not exist in our record" })
         }
@@ -86,7 +87,7 @@ const logout = expressAsyncHandler(async function (req, res) {
 
 const register = expressAsyncHandler(async function (req, res) {
     const newUserData = req.body;
-    const doesUserExit = await User.findOne({ email: newUserData.email });
+    const doesUserExit = await Employee.findOne({ email: newUserData.email });
     if (doesUserExit) {
         return res.status(409).json({ success: false, message: "User with this email is already exist" });
     }
@@ -108,12 +109,12 @@ const changePassword = expressAsyncHandler(async function (req, res) {
 const change_profile = expressAsyncHandler(async (req, res) => {
     const { uid } = req.user;
     try {
-        const user = await User.findOne({_id: new ObjectId(uid)})
+        const user = await Employee.findOne({ _id: new ObjectId(uid) })
 
-        if(!user){
-            return res.status(404).json({success: false, message: "User does not exist for changing photo"})
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User does not exist for changing photo" })
         }
-        const result = await User.updateOne(
+        const result = await Employee.updateOne(
             { _id: new Object(user._id) },
             { $set: { photo: req.body.url, lastModified: indiaDate.timestamps } }
         );

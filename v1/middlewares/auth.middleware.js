@@ -1,7 +1,7 @@
 import JWT from 'jsonwebtoken'
 
 export const checkAuthorization = async (req, res, next) => {
-    if (req.path == `/api/${process.env.APP_VERSION}/auth/login` || req.path == `/api/${process.env.APP_VERSION}/auth/register` || req.path == `/api/${process.env.APP_VERSION}/auth/forgot-password`) {
+    if (req.path == `/api/${process.env.APP_VERSION}/auth/login` || req.path == `/api/${process.env.APP_VERSION}/auth/register` || req.path == `/api/${process.env.APP_VERSION}/auth/forgot-password` || req.path == `/api/${process.env.APP_VERSION}/employee/add`) {
         return next();
     }
     const cookie = req.headers.cookie;
